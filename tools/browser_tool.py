@@ -533,8 +533,8 @@ def _reap_orphaned_browser_sessions():
         # Check if the daemon is still alive
         try:
             os.kill(daemon_pid, 0)  # signal 0 = existence check
-        except ProcessLookupError:
-            # Already dead, just clean up the dir
+        except (ProcessLookupError, OSError):
+            # Dead or unreachable (Windows WinError 11) — clean up the dir
             shutil.rmtree(socket_dir, ignore_errors=True)
             continue
         except PermissionError:
